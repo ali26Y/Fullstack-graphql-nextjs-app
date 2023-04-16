@@ -1,0 +1,176 @@
+{
+  "editor.fontSize": 11.5,
+  "explorer.confirmDragAndDrop": false,
+  "javascript.updateImportsOnFileMove.enabled": "always",
+
+  "prettier.tabWidth": 2,
+  "editor.detectIndentation": false,
+  "editor.minimap.enabled": false,
+  "workbench.editor.enablePreview": false,
+  "window.nativeTabs": true,
+  "remote.SSH.showLoginTerminal": true,
+
+  // use tabs instead of spaces
+  "editor.insertSpaces": false,
+  // tab size
+  "editor.tabSize": 2,
+
+  "workbench.iconTheme": "vscode-icons",
+  "workbench.colorTheme": "Theme (Italic)",
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+
+  "editor.formatOnSave": true,
+  "eslint.run": "onSave",
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  },
+
+  "terminal.explorerKind": "external",
+  "terminal.external.osxExec": "iTerm.app",
+  "terminal.integrated.shell.osx": "/bin/zsh",
+  "debug.console.fontSize": 11,
+  "markdown.preview.fontSize": 12,
+  "eslint.format.enable": true,
+  "security.workspace.trust.untrustedFiles": "open",
+  "xmlTools.enableXmlTreeView": true,
+  "redhat.telemetry.enabled": false,
+  "yaml.customTags": [
+    "!And",
+    "!And sequence",
+    "!If",
+    "!If sequence",
+    "!Not",
+    "!Not sequence",
+    "!Equals",
+    "!Equals sequence",
+    "!Or",
+    "!Or sequence",
+    "!FindInMap",
+    "!FindInMap sequence",
+    "!Base64",
+    "!Join",
+    "!Join sequence",
+    "!Cidr",
+    "!Ref",
+    "!Sub",
+    "!Sub sequence",
+    "!GetAtt",
+    "!GetAZs",
+    "!ImportValue",
+    "!ImportValue sequence",
+    "!Select",
+    "!Select sequence",
+    "!Split",
+    "!Split sequence"
+  ],
+  "yaml.validate": false,
+  "typescript.updateImportsOnFileMove.enabled": "always",
+  "editor.accessibilitySupport": "off",
+  "vsicons.dontShowNewVersionMessage": true,
+  "json.maxItemsComputed": 20000,
+  "editor.inlineSuggest.enabled": true,
+  "merge-conflict.diffViewPosition": "Beside",
+  "editor.codeLens": true,
+  "git.mergeEditor": false,
+  "editor.fontLigatures": true,
+
+  //   "editor.fontFamily": "Menlo, Monaco, 'Courier New', monospace",
+
+  "editor.fontFamily": "'Fira Code iScript', Menlo, Monaco, 'Courier New', monospace",
+
+  "editor.tokenColorCustomizations": {
+    "textMateRules": [
+      {
+        "scope": [
+          // the following elements will be in italic
+          "comment",
+          "storage.modifier", // static keyword
+          "storage.type.php", // typehints in methods keyword
+          "keyword.other.new.php", // new
+          "entity.other.attribute-name", // html attributes
+          "fenced_code.block.language.markdown", // markdown language modifier
+          "keyword", //import, export, return…
+          "storage.modifier", //static keyword
+          "storage.type", //class keyword
+          "keyword.control",
+          "constant.language",
+          "entity.other.attribute-name",
+          "entity.name.method",
+          "keyword.control.import.ts",
+          "keyword.control.import.tsx",
+          "keyword.control.import.js",
+          "keyword.control.flow.js",
+          "keyword.control.from.js",
+          "keyword.control.from.ts",
+          "keyword.control.from.tsx"
+        ],
+        "settings": {
+          "fontStyle": "italic"
+        }
+      },
+      {
+        "scope": [
+          // the following elements will be displayed in bold
+          "entity.name.type.class" // class names
+        ],
+        "settings": {
+          "fontStyle": ""
+        }
+      },
+      {
+        "scope": [
+          // the following elements will be displayed in bold and italic
+          "entity.name.section.markdown" // markdown headlines
+        ],
+        "settings": {
+          "fontStyle": "italic"
+        }
+      },
+      {
+        "scope": "meta.object-literal.key",
+        "settings": {
+          "fontStyle": ""
+        }
+      },
+      {
+        "scope": "variable.other.property",
+        "settings": {
+          "fontStyle": ""
+        }
+      },
+      {
+        "scope": "meta.tag.attributes.js.jsx",
+        "settings": {
+          "fontStyle": ""
+        }
+      },
+      {
+        "scope": [
+          // the following elements will be excluded from italics
+          //   (VSCode has some defaults for italics)
+          "invalid",
+          "keyword.operator",
+          "constant.numeric.css",
+          "keyword.other.unit.px.css",
+          "constant.numeric.decimal.js",
+          "constant.numeric.json",
+          "comment.block",
+          "entity.other.attribute-name.class.css"
+        ],
+        "settings": {
+          "fontStyle": ""
+        }
+      }
+    ]
+  },
+
+  "workbench.colorCustomizations": {
+    "sideBar.background": "#10131A",
+    "editor.background": "#0D1017",
+    "sideBarSectionHeader.background": "#1A1D24",
+    "statusBar.background": "#050a15",
+    "activityBar.background": "#050a15",
+    "list.inactiveSelectionBackground": "#12151C",
+    "terminal.background": "#0D1017"
+  }
+}
