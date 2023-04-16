@@ -3,6 +3,7 @@ import { NavBar } from "../components/NavBar";
 import { createUrqlClient } from "../utils/createUrqlClient";
 import { useQuery } from "urql";
 import { postsQuery } from "../graphql/queries/posts";
+import { isServer } from "../utils/isServer";
 
 type Posts = {
   id: number;
@@ -12,19 +13,20 @@ type Posts = {
 const Index = () => {
   const [{ data, fetching }] = useQuery({
     query: postsQuery,
+    pause: isServer(),
   });
-
-  console.log("data", data, fetching);
 
   return (
     <>
       <NavBar />
       <div>hello world</div>
-      {!data
-        ? null
-        : data.posts.map((p: Posts) => <div key={p.id}>{p.title}</div>)}
+      {fetching ? null : !data ? (
+        <div>loading...</div>
+      ) : (
+        data.posts.map((p: Posts) => <div key={p.id}>{p.title}</div>)
+      )}
     </>
   );
 };
 
-export default withUrqlClient(createUrqlClient)(Index);
+export default withUrqlClient(createUrqlClient, { ssr: true })(Index);

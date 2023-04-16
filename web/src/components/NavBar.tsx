@@ -29,13 +29,9 @@ export const NavBar: React.FC<NavBarProps> = ({}) => {
         {!fetching && !data?.me ? (
           <Flex>
             <Box mr="3">
-              <NextLink href="/login">
-                <Link>Login</Link>
-              </NextLink>
+              <NextLink href="/login">Login</NextLink>
             </Box>
-            <NextLink href="/register">
-              <Link>Register</Link>
-            </NextLink>
+            <NextLink href="/register">Register</NextLink>
           </Flex>
         ) : null}
         {!fetching && data?.me ? (
