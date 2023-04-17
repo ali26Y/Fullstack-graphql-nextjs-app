@@ -20,7 +20,7 @@ const Index = () => {
     <>
       <NavBar />
       <div>hello world</div>
-      {fetching ? null : !data ? (
+      {fetching || !data ? (
         <div>loading...</div>
       ) : (
         data.posts.map((p: Posts) => <div key={p.id}>{p.title}</div>)

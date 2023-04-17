@@ -8,8 +8,9 @@ import { buildSchema } from "type-graphql";
 import { HelloResolver } from "./resolvers/hello";
 import { PostResolver } from "./resolvers/post";
 import { UserResolver } from "./resolvers/user";
+import Redis from "ioredis";
 
-import { createClient } from "redis";
+// import { createClient } from "redis";
 import RedisStore from "connect-redis";
 import session from "express-session";
 import { sendEmail } from "./sendEmail";
@@ -25,14 +26,11 @@ const main = async () => {
   app.set("Access-Control-Allow-Origin", "https://studio.apollographql.com");
   app.set("Access-Control-Allow-Credentials", true);
 
-  const redisClient = createClient();
-  redisClient.connect().catch(console.error);
-
-  // typescript ignore because connect-redis is not updated to support typescript
+  const redis = new Redis();
   // @ts-ignore
   let redisStore = new RedisStore({
     // @ts-ignore
-    client: redisClient,
+    client: redis,
     disableTouch: true,
     prefix: "myapp:",
   });
@@ -59,7 +57,7 @@ const main = async () => {
       resolvers: [HelloResolver, PostResolver, UserResolver],
       validate: false,
     }),
-    context: ({ req, res }) => ({ em: orm.em, req, res }),
+    context: ({ req, res }) => ({ em: orm.em, req, res, redis }),
   });
   await apolloServer.start();
   const cors = {

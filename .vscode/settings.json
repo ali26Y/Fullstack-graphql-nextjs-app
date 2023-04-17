@@ -16,7 +16,7 @@
   "editor.tabSize": 2,
 
   "workbench.iconTheme": "vscode-icons",
-  "workbench.colorTheme": "Theme (Italic)",
+  "workbench.colorTheme": "Atom One Dark",
   "editor.defaultFormatter": "esbenp.prettier-vscode",
 
   "editor.formatOnSave": true,
