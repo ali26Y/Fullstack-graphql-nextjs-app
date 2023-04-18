@@ -15,6 +15,7 @@ import { UsernamePasswordInput } from "./UsernamePasswordInput";
 import { validateRegister } from "../utils/validateRegister";
 import { sendEmail } from "../sendEmail";
 import { v4 } from "uuid";
+import { AppDataSource } from "../typeorm.config";
 
 @ObjectType()
 class FieldError {
@@ -34,12 +35,72 @@ class UserResponse {
 
 @Resolver()
 export class UserResolver {
+  @Mutation(() => UserResponse)
+  async changePassword(
+    @Arg("newPassword") newPassword: string,
+    @Arg("token") token: string,
+    @Ctx() { redis, req }: MyContext
+  ): Promise<UserResponse> {
+    if (newPassword.length <= 2) {
+      return {
+        errors: [
+          {
+            field: "newPassword",
+            message: "length must be greater than 2",
+          },
+        ],
+      };
+    }
+    const key = FORGET_PASSWORD_PREFIX + token;
+    const userId = await redis.get(key);
+    if (!userId) {
+      return {
+        errors: [
+          {
+            field: "token",
+            message: "token expired",
+          },
+        ],
+      };
+    }
+    // change password
+    const userIdNum = parseInt(userId);
+
+    const user = await User.findOneBy({ id: userIdNum });
+
+    if (!user) {
+      return {
+        errors: [
+          {
+            field: "token",
+            message: "user no longer exists",
+          },
+        ],
+      };
+    }
+
+    user.password = await argon2.hash(newPassword);
+    // await em.persistAndFlush(user);
+
+    await User.update(
+      { id: userIdNum },
+      { password: await argon2.hash(newPassword) }
+    );
+
+    await redis.del(key);
+
+    // login user after change password
+    req.session.userId = user.id;
+
+    return { user };
+  }
+
   @Mutation(() => Boolean)
   async forgotPassword(
-    @Ctx() { em, redis }: MyContext,
+    @Ctx() { redis }: MyContext,
     @Arg("email") email: string
   ) {
-    const user = await em.findOne(User, { email });
+    const user = await User.findOneBy({ email });
     if (!user) {
       // the email is not in the database
       return true;
@@ -62,19 +123,19 @@ export class UserResolver {
   }
 
   @Query(() => User, { nullable: true })
-  async me(@Ctx() { req, em }: MyContext) {
+  async me(@Ctx() { req }: MyContext) {
     if (!req.session.userId) {
       return null;
     }
 
-    const user = await em.findOne(User, { id: req.session.userId });
+    const user = await User.findOneBy({ id: req.session.userId });
     return user;
   }
 
   @Mutation(() => UserResponse)
   async register(
     @Arg("options", () => UsernamePasswordInput) options: UsernamePasswordInput,
-    @Ctx() { em, req }: MyContext
+    @Ctx() { req }: MyContext
   ): Promise<UserResponse> {
     const errors = validateRegister(options);
     if (errors) {
@@ -83,13 +144,31 @@ export class UserResolver {
       };
     }
     const hashedPassword = await argon2.hash(options.password);
-    const user = em.create(User, {
-      email: options.email.toLowerCase(),
-      username: options.username.toLowerCase(),
-      password: hashedPassword,
-    });
+
     try {
-      await em.persistAndFlush(user);
+      const userRepository = AppDataSource.getRepository(User);
+
+      const result = await userRepository
+        .createQueryBuilder()
+        .insert()
+        .into(User)
+        .values({
+          email: options.email.toLowerCase(),
+          username: options.username.toLowerCase(),
+          password: hashedPassword,
+        })
+        .returning("*")
+        .execute();
+
+      // alternative way to save the user
+      // await User.create({}).save();
+
+      const user = result.raw[0];
+
+      // this will login the user after registration
+      req.session.userId = user.id;
+
+      return { user };
       /* alternative way to persist and flush
 
 			  import { EntityManager } from "@mikro-orm/postgresql";
@@ -120,22 +199,24 @@ export class UserResolver {
           ],
         };
       }
+      return {
+        errors: [
+          {
+            field: "username",
+            message: "something went wrong",
+          },
+        ],
+      };
     }
-
-    // this will login the user after registration
-    req.session.userId = user.id;
-    console.log("req.session.userId", req.session);
-
-    return { user };
   }
 
   @Mutation(() => UserResponse)
   async login(
     @Arg("usernameOrEmail") usernameOrEmail: string,
     @Arg("password") password: string,
-    @Ctx() { em, req }: MyContext
+    @Ctx() { req }: MyContext
   ): Promise<UserResponse> {
-    const user = await em.findOne(User, {
+    const user = await User.findOneBy({
       ...(usernameOrEmail.includes("@")
         ? { email: usernameOrEmail.toLowerCase() }
         : { username: usernameOrEmail.toLowerCase() }),

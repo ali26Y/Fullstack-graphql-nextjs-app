@@ -10,7 +10,6 @@ interface NavBarProps {}
 export const NavBar: React.FC<NavBarProps> = ({}) => {
   const [{ data, fetching }] = useQuery({
     query: meQuery,
-    // requestPolicy: "network-only",
   });
 
   const [{ fetching: logoutFetching }, logout] = useMutation(logoutMutation);
