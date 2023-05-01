@@ -129,6 +129,7 @@ export class UserResolver {
     }
 
     const user = await User.findOneBy({ id: req.session.userId });
+
     return user;
   }
 
@@ -244,7 +245,6 @@ export class UserResolver {
     }
 
     req.session.userId = user.id;
-    console.log("req.session.userId", req.session);
 
     return {
       user,

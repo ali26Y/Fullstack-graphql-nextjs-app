@@ -42,7 +42,9 @@ const main = async () => {
         maxAge: 1000 * 60 * 60 * 24 * 365 * 10, // 10 years
         httpOnly: true,
         sameSite: "lax", // make this "none" for studio.apollographql.com
+        // sameSite: "none", // make this "none" for studio.apollographql.com
         secure: __prod__, // cookie only works in https, make this "true" for studio.apollographql.com
+        // secure: true, // cookie only works in https, make this "true" for studio.apollographql.com
       },
       saveUninitialized: false, // recommended: only save session when data exists
       secret: "keyboard cat",
